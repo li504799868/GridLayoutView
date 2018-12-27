@@ -2,10 +2,10 @@ package com.lzp.grid
 
 import android.content.Context
 import android.database.DataSetObserver
+import android.support.v7.widget.GridLayout
 import android.util.AttributeSet
 import android.view.View
 import android.widget.BaseAdapter
-import android.widget.GridLayout
 
 
 /**
@@ -13,7 +13,7 @@ import android.widget.GridLayout
  *
  * @author li.zhipeng
  */
-class GridLayoutView <T>
+class GridLayoutView<T>
 /**
  * 仿GridV构造方法
  */
@@ -46,11 +46,12 @@ class GridLayoutView <T>
      */
     var adapter: BaseAdapter? = null
         set(adapter) {
+            // 解绑之前的adapter的数据监听
+            unregisterDataSetObserver()
             field = adapter
             this.count = field!!.count
             this.adapter!!.registerDataSetObserver(dataSetObserver)
-            post { this.fillChildInLayout() }
-
+            this.fillChildInLayout()
         }
 
     /**
@@ -119,16 +120,12 @@ class GridLayoutView <T>
 
     private fun fillChildInLayoutVertical() {
         val columnCount = columnCount
-        // 计算宽度
-        val width = width
-        // 减去水平间距
-        val childWidth = (width - horizontalSpace * (columnCount - 1)) / columnCount
         // 遍历adapter
         for (position in 0 until count) {
             // 得到adapter中的View
             val child = getView(position)
             // 得到布局信息
-            val params = generateLayoutParams(child!!, childWidth, -1, position)
+            val params = generateLayoutParams(child, position)
             // 设置水平方向的间距
             if (position % columnCount == columnCount - 1) {
                 params.rightMargin = 0
@@ -154,16 +151,12 @@ class GridLayoutView <T>
 
     private fun fillChildInLayoutHorizontal() {
         val rowCount = rowCount
-        // 计算宽度
-        val height = height
-        // 减去水平间距
-        val childHeight = (height - verticalSpace * (rowCount - 1)) / rowCount
         // 遍历adapter
         for (position in 0 until count) {
             // 得到adapter中的View
             val child = getView(position)
             // 得到布局信息
-            val params = generateLayoutParams(child!!, -1, childHeight, position)
+            val params = generateLayoutParams(child!!, position)
             // 设置竖直方向的间距
             if (position % rowCount == rowCount - 1) {
                 params.bottomMargin = 0
@@ -192,7 +185,7 @@ class GridLayoutView <T>
     /**
      * 从cache中得到View，没有则创建
      */
-    private fun getView(index: Int): View? {
+    private fun getView(index: Int): View {
         // 首先遍历已经存在的child，直接更新内容
         // 这样可以节省清空再填充的性能浪费
         var view: View? = null
@@ -207,24 +200,20 @@ class GridLayoutView <T>
     /**
      * 生成LayoutParams
      */
-    private fun generateLayoutParams(child: View, width: Int, height: Int, position: Int): GridLayout.LayoutParams {
+    private fun generateLayoutParams(child: View, position: Int): GridLayout.LayoutParams {
         val params: GridLayout.LayoutParams = if (child.layoutParams != null) {
             child.layoutParams as GridLayout.LayoutParams
         } else {
             GridLayout.LayoutParams()
         }
         // 设置宽度
-        if (width != -1) {
-            params.width = width
+        if (orientation == VERTICAL) {
             // 设置所占的行数
-            params.columnSpec = GridLayout.spec(position % columnCount, 1)
+            params.columnSpec = GridLayout.spec(position % columnCount, 1, 1f)
             params.rowSpec = GridLayout.spec(position / columnCount, 1)
-        }
-        // 设置高度
-        if (height != -1) {
-            params.height = height
+        } else {
             // 设置所占的行数
-            params.rowSpec = GridLayout.spec(position % rowCount, 1)
+            params.rowSpec = GridLayout.spec(position % rowCount, 1, 1f)
             params.columnSpec = GridLayout.spec(position / rowCount, 1)
         }
         return params
@@ -232,13 +221,14 @@ class GridLayoutView <T>
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        if (this.adapter != null) {
-            try {
-                this.adapter!!.unregisterDataSetObserver(dataSetObserver)
-            } catch (ignore: Exception) {
-                // 忽略异常，可能是因为dataSetObserver没有被注册导致的
-            }
+        unregisterDataSetObserver()
+    }
 
+    private fun unregisterDataSetObserver() {
+        try {
+            this.adapter?.unregisterDataSetObserver(dataSetObserver)
+        } catch (ignore: Exception) {
+            // 忽略异常，可能是因为dataSetObserver没有被注册导致的
         }
     }
 
@@ -258,8 +248,7 @@ class GridLayoutView <T>
      *
      * @param onCellClickListener 单元格单击事件接口
      */
-    fun setOnCellClickListener(onCellClickListener: OnCellClickListener<T?>)
-    {
+    fun setOnCellClickListener(onCellClickListener: OnCellClickListener<T?>) {
         this.onCellClickListener = onCellClickListener
     }
 

@@ -31,10 +31,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimaryDark"
-                android:orientation="horizontal"
-                android:rowCount="3"
-
                 app:horizontalSpacing="5dp"
+                app:orientation="horizontal"
+                app:rowCount="3"
                 app:verticalSpacing="5dp" />
 
         </LinearLayout>
