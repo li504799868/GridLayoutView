@@ -2,6 +2,7 @@ package com.lzp.grid.demo
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 
 import com.lzp.grid.GridLayoutView
 
@@ -20,7 +21,13 @@ class TestHorizontalActivity : BaseActivity() {
             list.add(i.toString())
         }
         adapter = TestAdapter(this, list)
-        val gridView = findViewById<GridLayoutView>(R.id.grid)
+        val gridView = findViewById<GridLayoutView<String>>(R.id.grid)
+        gridView.setOnCellClickListener(object : GridLayoutView.OnCellClickListener<String?>{
+            override fun onCellClick(index: Int, t: String?) {
+                Toast.makeText(this@TestHorizontalActivity, t, Toast.LENGTH_SHORT).show()
+            }
+
+        })
         gridView.adapter = adapter
         findViewById<View>(R.id.reduce).setOnClickListener {
             list.remove(list[0])

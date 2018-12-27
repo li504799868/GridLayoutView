@@ -1,6 +1,8 @@
 package com.lzp.grid.demo;
 
 import android.os.Bundle;
+import android.widget.AdapterView;
+import android.widget.Toast;
 
 import com.lzp.grid.GridLayoutView;
 
@@ -17,11 +19,12 @@ public class TestVerticalActivity extends BaseActivity {
         setContentView(R.layout.activity_test);
 
         final List<String> list = new ArrayList<>();
-        for (int i = 0; i < 10; i ++){
+        for (int i = 0; i < 10; i++) {
             list.add(String.valueOf(i));
         }
         adapter = new TestAdapter(this, list);
-        GridLayoutView gridView = findViewById(R.id.grid);
+        GridLayoutView<String> gridView = findViewById(R.id.grid);
+        gridView.setOnCellClickListener((index, s) -> Toast.makeText(this, s, Toast.LENGTH_SHORT).show());
         gridView.setAdapter(adapter);
         findViewById(R.id.reduce).setOnClickListener(v -> {
             list.remove(list.get(0));
