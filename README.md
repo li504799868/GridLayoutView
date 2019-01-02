@@ -5,9 +5,10 @@
 支持网格间距：
 	
 	<declare-styleable name="GridLayoutView">
-        <attr name="verticalSpacing" format="dimension" />
-        <attr name="horizontalSpacing" format="dimension" />
-    </declare-styleable>
+        	<attr name="verticalSpacing" format="dimension" />
+       	 	<attr name="horizontalSpacing" format="dimension" />
+		<attr name="dividerColor" format="color" />
+    	</declare-styleable>
 	
 <br />
 
@@ -15,7 +16,7 @@
 <br />
 1、添加gradle依赖
 
-	compile 'com.lzp:GridLayoutView:1.0.0'
+	compile 'com.lzp:GridLayoutView:1.0.3'
 
 2、在xml中添加GridLayoutView:
 	
@@ -26,6 +27,7 @@
           android:layout_height="match_parent"
           android:background="@color/colorPrimaryDark"
           app:columnCount="3"
+	  app:dividerColor="#50000000"
           app:horizontalSpacing="5dp"
           app:orientation="vertical"
           app:verticalSpacing="5dp" />
