@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.lzp.grid.demo.view.SquareRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="100dp"
     android:layout_height="wrap_content"
     android:background="@color/colorAccent"
@@ -13,4 +13,4 @@
         android:text="1"
         android:textColor="#ffffff" />
 
-</RelativeLayout>
+</com.lzp.grid.demo.view.SquareRelativeLayout>

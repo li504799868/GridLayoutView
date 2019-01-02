@@ -104,16 +104,18 @@ class GridLayoutView<T>
             return
         }
 
-        // 判断如果是竖向
-        if (orientation == GridLayout.VERTICAL) {
-            fillChildInLayoutVertical()
-        } else {
-            fillChildInLayoutHorizontal()
-        }
+        post {
+            // 判断如果是竖向
+            if (orientation == GridLayout.VERTICAL) {
+                fillChildInLayoutVertical()
+            } else {
+                fillChildInLayoutHorizontal()
+            }
 
-        // 如果当前child的数量比count要大，移除多余Child
-        if (childCount > count) {
-            removeViews(count, childCount - count)
+            // 如果当前child的数量比count要大，移除多余Child
+            if (childCount > count) {
+                removeViews(count, childCount - count)
+            }
         }
 
     }
@@ -208,10 +210,12 @@ class GridLayoutView<T>
         }
         // 设置宽度
         if (orientation == VERTICAL) {
+            params.width = width / 3
             // 设置所占的行数
-            params.columnSpec = GridLayout.spec(position % columnCount, 1, 1f)
+            params.columnSpec = GridLayout.spec(position % columnCount, 1)
             params.rowSpec = GridLayout.spec(position / columnCount, 1)
         } else {
+            params.height = height / 3
             // 设置所占的行数
             params.rowSpec = GridLayout.spec(position % rowCount, 1, 1f)
             params.columnSpec = GridLayout.spec(position / rowCount, 1)
