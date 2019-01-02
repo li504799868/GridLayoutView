@@ -30,7 +30,7 @@
                 android:id="@+id/grid"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"
+                app:dividerColor="@color/colorPrimaryDark"
                 app:horizontalSpacing="5dp"
                 app:orientation="horizontal"
                 app:rowCount="3"

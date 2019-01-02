@@ -2,6 +2,9 @@ package com.lzp.grid
 
 import android.content.Context
 import android.database.DataSetObserver
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.support.v7.widget.GridLayout
 import android.util.AttributeSet
 import android.view.View
@@ -20,25 +23,16 @@ class GridLayoutView<T>
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : GridLayout(context, attrs) {
 
     /**
-     * 布局水平分割线宽度
-     */
-    /**
-     * 返回该控件各单元格水平间距
-     */
-    /**
-     * 设置该控件各单元格水平间距
-     */
-    var horizontalSpace = 0
-    /**
-     * 布局垂直分割线宽度
-     */
-    /**
-     * 返回该控件各单元格垂直间距
-     */
-    /**
-     * 设置该控件各单元格垂直间距
-     */
-    var verticalSpace = 0
+     * 分割线
+     * */
+    var divider: Divider? = null
+        set(value) {
+            field = value
+            paint.color = value?.color ?: Color.TRANSPARENT
+            fillChildInLayout()
+        }
+
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG)
 
     /**
      * 设置该控件的适配器
@@ -88,11 +82,16 @@ class GridLayoutView<T>
     private fun initAttrs(context: Context, attrs: AttributeSet?) {
         val typedArray = context.obtainStyledAttributes(attrs,
                 R.styleable.GridLayoutView)
-        horizontalSpace = typedArray.getDimensionPixelSize(
-                R.styleable.GridLayoutView_horizontalSpacing, 0)
-        verticalSpace = typedArray.getDimensionPixelSize(
-                R.styleable.GridLayoutView_verticalSpacing, 0)
+        divider = Divider(
+                typedArray.getDimensionPixelSize(
+                        R.styleable.GridLayoutView_horizontalSpacing, 0),
+                typedArray.getDimensionPixelSize(
+                        R.styleable.GridLayoutView_verticalSpacing, 0),
+                typedArray.getColor(
+                        R.styleable.GridLayoutView_dividerColor, Color.TRANSPARENT)
+        )
         typedArray.recycle()
+        setWillNotDraw(false)
     }
 
     /**
@@ -121,7 +120,6 @@ class GridLayoutView<T>
     }
 
     private fun fillChildInLayoutVertical() {
-        val columnCount = columnCount
         // 遍历adapter
         for (position in 0 until count) {
             // 得到adapter中的View
@@ -129,16 +127,16 @@ class GridLayoutView<T>
             // 得到布局信息
             val params = generateLayoutParams(child, position)
             // 设置水平方向的间距
-            if (position % columnCount == columnCount - 1) {
+            if (isLastColumn(position)) {
                 params.rightMargin = 0
             } else {
-                params.rightMargin = horizontalSpace
+                params.rightMargin = divider?.horizontalSpace ?: 0
             }// 中间的child
             // 设置竖直方向的间距,
-            if (position > count - 1 - columnCount) {
+            if (isLastRow(position)) {
                 params.bottomMargin = 0
             } else {
-                params.bottomMargin = verticalSpace
+                params.bottomMargin = divider?.verticalSpace ?: 0
             }
             // 设置点击之间
             child.setOnClickListener {
@@ -152,24 +150,23 @@ class GridLayoutView<T>
     }
 
     private fun fillChildInLayoutHorizontal() {
-        val rowCount = rowCount
         // 遍历adapter
         for (position in 0 until count) {
             // 得到adapter中的View
             val child = getView(position)
             // 得到布局信息
-            val params = generateLayoutParams(child!!, position)
+            val params = generateLayoutParams(child, position)
             // 设置竖直方向的间距
-            if (position % rowCount == rowCount - 1) {
+            if (isLastRow(position)) {
                 params.bottomMargin = 0
             } else {
-                params.bottomMargin = verticalSpace
+                params.bottomMargin = divider?.verticalSpace ?: 0
             }
             // 设置水平方向的边距
-            if (position > count - 1 - rowCount) {
+            if (isLastColumn(position)) {
                 params.rightMargin = 0
             } else {
-                params.rightMargin = horizontalSpace
+                params.rightMargin = divider?.horizontalSpace ?: 0
             }
             // 设置点击之间
             child.setOnClickListener {
@@ -228,6 +225,71 @@ class GridLayoutView<T>
         unregisterDataSetObserver()
     }
 
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        if (divider == null) {
+            return
+        }
+
+        for (index in 0..count) {
+            val child = getChildAt(index) ?: continue
+            // 如果不是最后一列，要画右边的divider
+            if (!isLastColumn(index)) {
+                // 竖线
+                paint.strokeWidth = divider!!.horizontalSpace.toFloat()
+                val right = child.right.toFloat() + divider!!.horizontalSpace / 2
+                // 竖线的长度
+                // 竖线和横线的交叉部分，优先画横线，如果已经有横线，交叉部分不画竖线
+                val verticalDividerLength = if (divider!!.verticalSpace == 0) {
+                    child.bottom.toFloat() + divider!!.verticalSpace
+                } else {
+                    child.bottom.toFloat()
+                }
+                canvas.drawLine(right, child.top.toFloat(), right, verticalDividerLength, paint)
+            }
+
+            // 如果不是最后一行，要画下面的divider
+            if (!isLastRow(index)) {
+                // 横线
+                paint.strokeWidth = divider!!.verticalSpace.toFloat()
+                val bottom = child.bottom.toFloat() + divider!!.verticalSpace / 2
+                canvas.drawLine(child.left.toFloat(), bottom, child.right.toFloat() + divider!!.horizontalSpace, bottom, paint)
+            }
+        }
+    }
+
+    /**
+     * 是否最后一列
+     * */
+    private fun isLastColumn(index: Int): Boolean {
+        return if (orientation == VERTICAL) {
+            index % 3 == columnCount - 1
+        } else {
+            val columnCount = if (count % rowCount > 0) {
+                count / rowCount + 1
+            } else {
+                count / rowCount
+            }
+            columnCount.times(rowCount) - index <= rowCount
+        }
+    }
+
+    /**
+     * 是否是最后一行
+     * */
+    private fun isLastRow(index: Int): Boolean {
+        return if (orientation == VERTICAL) {
+            val rowCount = if (count % columnCount > 0) {
+                count / columnCount + 1
+            } else {
+                count / columnCount
+            }
+            rowCount.times(columnCount) - index <= columnCount
+        } else {
+            index % rowCount == rowCount - 1
+        }
+    }
+
     private fun unregisterDataSetObserver() {
         try {
             this.adapter?.unregisterDataSetObserver(dataSetObserver)
@@ -255,5 +317,7 @@ class GridLayoutView<T>
     fun setOnCellClickListener(onCellClickListener: OnCellClickListener<T?>) {
         this.onCellClickListener = onCellClickListener
     }
+
+    class Divider(var horizontalSpace: Int = 0, var verticalSpace: Int = 0, var color: Int)
 
 }

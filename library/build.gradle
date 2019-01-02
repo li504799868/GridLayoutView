@@ -5,13 +5,11 @@ apply plugin: 'com.novoda.bintray-release'
 android {
     compileSdkVersion 28
 
-
-
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.1"
+        versionCode 3
+        versionName "1.0.2"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -52,7 +50,7 @@ publish {
     userOrg = 'lizp' // 创建repo的位置
     groupId = 'com.lzp' // 引用的分组名称
     artifactId = 'GridLayoutView'//项目名称
-    publishVersion = "1.0.1"//版本号
+    publishVersion = "1.0.2"//版本号
     desc = '自适应高度或宽度的网格布局'
     website = 'https://github.com/li504799868/GridLayoutView'
 }

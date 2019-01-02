@@ -31,11 +31,11 @@
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorPrimaryDark"
                 app:columnCount="3"
-                app:horizontalSpacing="5dp"
+                app:dividerColor="#50000000"
+                app:horizontalSpacing="6dp"
                 app:orientation="vertical"
-                app:verticalSpacing="5dp" />
+                app:verticalSpacing="6dp" />
 
         </LinearLayout>
 
@@ -44,7 +44,7 @@
 
 </LinearLayout>
 
-<!--<android.support.v7.widget.GridLayout--><!--android:layout_width="300dp"--><!--android:layout_height="300dp"--><!--android:background="@color/colorPrimaryDark"--><!--app:alignmentMode="alignBounds"--><!--app:columnCount="3"--><!--app:horizontalSpacing="5dp"--><!--app:orientation="vertical"--><!--app:rowCount="3"--><!--app:verticalSpacing="5dp">-->
+    <!--<android.support.v7.widget.GridLayout--><!--android:layout_width="300dp"--><!--android:layout_height="300dp"--><!--android:background="@color/colorPrimaryDark"--><!--app:alignmentMode="alignBounds"--><!--app:columnCount="3"--><!--app:horizontalSpacing="5dp"--><!--app:orientation="vertical"--><!--app:rowCount="3"--><!--app:verticalSpacing="5dp">-->
 
     <!--<TextView--><!--android:layout_width="100dp"--><!--android:layout_height="100dp"--><!--android:background="@color/colorAccent"--><!--app:layout_column="0"--><!--app:layout_row="0" />-->
 
