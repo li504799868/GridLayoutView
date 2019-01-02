@@ -6,8 +6,8 @@
 	
 	<declare-styleable name="GridLayoutView">
         <attr name="verticalSpacing" format="dimension" />
-       	 <attr name="horizontalSpacing" format="dimension" />
-	<attr name="dividerColor" format="color" />
+        <attr name="horizontalSpacing" format="dimension" />
+        <attr name="dividerColor" format="color" />
     </declare-styleable>
 	
 <br />
