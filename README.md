@@ -4,10 +4,15 @@
 <br />
 支持网格间距：
 	
-	<declare-styleable name="GridLayoutView">
-        <attr name="verticalSpacing" format="dimension" />
-        <attr name="horizontalSpacing" format="dimension" />
+	<attr name="verticalSpacing" format="dimension" />
+    <attr name="horizontalSpacing" format="dimension" />
+
+    <declare-styleable name="GridLayoutView">
+        <attr name="verticalSpacing" />
+        <attr name="horizontalSpacing" />
         <attr name="dividerColor" format="color" />
+	<!-- 更新child的时候，是否要清空，默认是false -->
+        <attr name="notifyClear" format="boolean" />
     </declare-styleable>
 	
 <br />
