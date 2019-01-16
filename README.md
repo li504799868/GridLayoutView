@@ -16,7 +16,7 @@
 <br />
 1、添加gradle依赖
 
-	compile 'com.lzp:GridLayoutView:1.0.3'
+	compile 'com.lzp:GridLayoutView:1.0.4'
 
 2、在xml中添加GridLayoutView:
 	
